@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IELTS Academic Reading – The Swine Flu Pandemic</title>
+<style>
+  :root {
+    --navy: #1f3a68;
+    --navy-dark: #152a4d;
+    --navy-light: #e8eef8;
+    --text: #333;
+    --muted: #8a8f98;
+    --border: #d9dde3;
+    --bg: #fff;
+    --soft: #f6f7f9;
+    --green: #1e7b3a;
+    --green-bg: #e8f5ec;
+    --red: #c62828;
+    --red-bg: #fdecec;
+    --yellow: #fff176;
+    --topbar-h: 54px;
+    --serif: Georgia, "Times New Roman", Times, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    overflow: hidden;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid #7fa3dd; outline-offset: 2px; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    height: var(--topbar-h);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--border);
+    background: #fff;
+    position: relative;
+    z-index: 5;
+  }
+  .topbar h1 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--navy);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .timer-wrap { display: flex; align-items: center; gap: 8px; }
+  .timer {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 18px;
+    min-width: 58px;
+    text-align: center;
+    color: var(--navy);
+  }
+  .timer.low { color: var(--red); }
+  .answered { font-size: 14px; color: #555; white-space: nowrap; }
+  .answered strong { color: var(--navy); }
+  .btn {
+    border: 1px solid var(--navy);
+    background: #fff;
+    color: var(--navy);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover:not(:disabled) { background: var(--navy-light); }
+  .btn.primary { background: var(--navy); color: #fff; }
+  .btn.primary:hover:not(:disabled) { background: var(--navy-dark); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* ---------- Main split ---------- */
+  .main {
+    display: flex;
+    height: calc(100vh - var(--topbar-h));
+    height: calc(100dvh - var(--topbar-h));
+  }
+  .panel { overflow-y: auto; height: 100%; }
+  .passage-panel { flex: 0 0 50%; padding: 28px 28px 60px 56px; }
+  .questions-panel {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .q-scroll { flex: 1 1 auto; overflow-y: auto; padding: 24px 28px 40px; }
+
+  .divider {
+    flex: 0 0 10px;
+    cursor: col-resize;
+    background: var(--soft);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    position: relative;
+    touch-action: none;
+  }
+  .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 2px; height: 36px;
+    transform: translate(-50%, -50%);
+    border-left: 2px dotted #9aa3b1;
+  }
+  .divider:hover, .divider.dragging { background: var(--navy-light); }
+  body.resizing { cursor: col-resize; user-select: none; }
+
+  /* ---------- Passage ---------- */
+  .passage { max-width: 70ch; }
+  .passage h2 {
+    font-family: var(--sans);
+    font-size: 17px;
+    color: var(--navy);
+    letter-spacing: .02em;
+    margin: 0 0 8px;
+  }
+  .instruction {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: #555;
+    margin: 0 0 22px;
+    font-style: italic;
+  }
+  .para {
+    position: relative;
+    font-family: var(--serif);
+    font-size: 17px;
+    line-height: 1.7;
+    margin: 0 0 1.1em;
+  }
+  .pnum {
+    position: absolute;
+    left: -2.4em;
+    top: .3em;
+    width: 1.8em;
+    text-align: right;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--muted);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  mark.hl { background: var(--yellow); color: inherit; cursor: pointer; border-radius: 2px; }
+  .ev { transition: background .2s; border-radius: 3px; }
+  .ev.active {
+    background: #dbe6fb;
+    box-shadow: 0 2px 0 var(--navy);
+  }
+  .hl-btn {
+    position: fixed;
+    z-index: 20;
+    display: none;
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  }
+  .hl-btn::before {
+    content: "";
+    display: inline-block;
+    width: 10px; height: 10px;
+    background: var(--yellow);
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+
+  /* ---------- Questions ---------- */
+  .score-box {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--navy-light);
+    border: 1px solid #c4d2ea;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+  }
+  .score-box.show { display: flex; }
+  .score-box .score { font-size: 20px; font-weight: 700; color: var(--navy); }
+  .score-box .score small { font-size: 13px; font-weight: 500; color: #555; margin-left: 6px; }
+
+  .q-section { margin-bottom: 34px; }
+  .q-section h3 { font-size: 16px; margin: 0 0 10px; color: var(--navy); }
+  .instr-box {
+    background: var(--soft);
+    border-left: 4px solid var(--navy);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: 14px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .instr-box p { margin: 0 0 4px; }
+  .instr-box p:last-child { margin: 0; }
+  .instr-box dl { margin: 6px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; }
+  .instr-box dt { font-weight: 700; }
+  .instr-box dd { margin: 0; }
+
+  .summary p { line-height: 2.5; margin: 0 0 6px; font-size: 15px; }
+  .gap { display: inline-block; position: relative; white-space: nowrap; vertical-align: baseline; }
+  .badge {
+    display: inline-block;
+    min-width: 22px;
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    background: var(--navy);
+    color: #fff;
+    margin-right: 4px;
+    vertical-align: 1px;
+  }
+  .gap input {
+    width: 160px;
+    border: none;
+    border-bottom: 2px solid #9aa3b1;
+    background: transparent;
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 2px 4px;
+    color: var(--text);
+    border-radius: 0;
+  }
+  .gap input:focus { outline: none; border-bottom-color: var(--navy); background: var(--navy-light); }
+  .gap input.over { border-bottom-color: #d98c00; }
+  .gap input.correct { border-bottom-color: var(--green); background: var(--green-bg); }
+  .gap input.wrong { border-bottom-color: var(--red); background: var(--red-bg); }
+  .gap input[readonly] { cursor: default; }
+  .warn {
+    position: absolute;
+    left: 30px;
+    top: 100%;
+    margin-top: -6px;
+    font-size: 11px;
+    line-height: 1.2;
+    color: #b06f00;
+    white-space: nowrap;
+    display: none;
+  }
+  .warn.show { display: block; }
+  .res { font-size: 14px; font-weight: 700; margin-left: 4px; }
+  .res.ok { color: var(--green); }
+  .res.bad { color: var(--red); }
+  .res .ans { font-weight: 600; color: var(--green); margin-left: 4px; }
+
+  .review { display: none; margin-top: 18px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .review.show { display: block; }
+  .review h4 { margin: 0 0 8px; font-size: 14px; color: #555; }
+  .review-row { padding: 6px 0; border-bottom: 1px dashed #e5e7eb; font-size: 14px; }
+  .review-row .rhead { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+
+  .tf-item { padding: 14px 0; border-bottom: 1px solid #eef0f3; }
+  .tf-item:last-child { border-bottom: none; }
+  .tf-statement { margin: 0 0 10px; line-height: 1.55; display: flex; gap: 8px; }
+  .tf-statement .badge { flex: 0 0 auto; margin-top: 1px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; border: none; margin: 0; padding: 0 0 0 34px; }
+  .pills legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .pill { position: relative; }
+  .pill input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .pill span {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1.5px solid #b8c0cc;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    cursor: pointer;
+    user-select: none;
+    transition: background .12s, border-color .12s;
+  }
+  .pill span:hover { border-color: var(--navy); }
+  .pill input:checked + span { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .pill input:focus-visible + span { outline: 3px solid #7fa3dd; outline-offset: 2px; }
+  .pill input:disabled + span { cursor: default; }
+  .pill input:disabled:not(:checked) + span { opacity: .55; }
+  .pill.is-correct span { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
+  .pill input:checked + span.wrong-pick { background: var(--red); border-color: var(--red); }
+  .pill input:checked + span.right-pick { background: var(--green); border-color: var(--green); }
+  .tf-result { padding-left: 34px; margin-top: 6px; }
+
+  .explain-btn {
+    background: none;
+    border: none;
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .explain-text {
+    display: none;
+    margin: 6px 0 2px;
+    padding: 8px 10px;
+    background: var(--soft);
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #444;
+  }
+  .explain-text.show { display: block; }
+
+  /* ---------- Bottom nav ---------- */
+  .q-nav {
+    flex: 0 0 auto;
+    border-top: 1px solid var(--border);
+    background: #fff;
+    padding: 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .nav-btn {
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    border: 1.5px solid var(--navy);
+    background: #fff;
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+  }
+  .nav-btn.answered { background: var(--navy); color: #fff; }
+  .nav-btn.correct { background: var(--green); border-color: var(--green); color: #fff; }
+  .nav-btn.wrong { background: var(--red); border-color: var(--red); color: #fff; }
+
+  /* ---------- Modal ---------- */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(20, 30, 50, .45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 16px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 10px;
+    padding: 22px 24px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
+  .modal h2 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
+  .modal p { margin: 0 0 18px; line-height: 1.5; }
+  .modal .actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* ---------- Narrow screens ---------- */
+  @media (max-width: 767px) {
+    body { overflow: auto; }
+    .topbar {
+      height: auto;
+      flex-wrap: wrap;
+      padding: 8px 16px;
+      gap: 8px 12px;
+      position: sticky;
+      top: 0;
+    }
+    .topbar h1 { flex-basis: 100%; }
+    .main { flex-direction: column; height: auto; }
+    .panel { height: auto; overflow: visible; }
+    .passage-panel { flex: none !important; width: auto !important; padding: 20px 16px 24px 40px; border-bottom: 1px solid var(--border); }
+    .divider { display: none; }
+    .questions-panel { overflow: visible; }
+    .q-scroll { overflow: visible; padding: 20px 16px 24px; }
+    .q-nav { position: sticky; bottom: 0; }
+    .pills { padding-left: 0; }
+    .tf-result { padding-left: 0; }
+    .gap input { width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <h1>IELTS Academic Reading — Passage 1: The Swine Flu Pandemic</h1>
+  <div class="timer-wrap">
+    <span class="timer" id="timer" role="timer" aria-live="off" aria-label="Time remaining">20:00</span>
+    <button class="btn" id="timerBtn" type="button">Start</button>
+  </div>
+  <div class="answered" aria-live="polite">Answered: <strong id="answeredCount">0</strong>/13</div>
+  <button class="btn primary" id="checkBtn" type="button">Check Answers</button>
+</header>
+
+<main class="main" id="main">
+  <!-- LEFT: passage -->
+  <section class="panel passage-panel" id="passagePanel" aria-label="Reading passage">
+    <article class="passage" id="passage">
+      <h2>READING PASSAGE 1 — THE SWINE FLU PANDEMIC</h2>
+      <p class="instruction">You should spend about 20 minutes on Questions 1–13, which are based on Reading Passage 1 below.</p>
+
+      <p class="para" id="p1"><span class="pnum" aria-hidden="true">1</span><span class="ev" data-ev="e1">The swine flu pandemic has become more problematic.</span> <span class="ev" data-ev="e10">The White House will meet with state representatives on the 9th of July to talk about the preparation for the autumn flu season in the US, whilst the UK has focused their response on the H1N1 virus to cope with widespread infection.</span></p>
+
+      <p class="para" id="p2"><span class="pnum" aria-hidden="true">2</span><span class="ev" data-ev="e2">In the meantime, the southern hemisphere is going into the middle of the winter flu season, and the swine H1N1 virus seems to be replacing the seasonal flu viruses that have been circulating until now.</span> This is related to the seasonal flu vaccine which several companies are still producing. It could cause some problems when the northern hemisphere flu season comes at the end of this year.</p>
+
+      <p class="para" id="p3"><span class="pnum" aria-hidden="true">3</span>The flu pandemics of 1918, 1957 and 1968 showed a high level of seasonal change and also released mild form of the H1N1 virus which circulates through the existing flu virus, H3N2. So, nobody knows how the H1N1 virus is going to behave. If it is not exchanged with the seasonal virus – the milder H1N1 and H3N2 – the world is facing the prospect of catching all three viruses at once. It would be a complicated scenario, as both seasonal and pandemic vaccines would be wanted and patients from different age groups would be affected. Although based on what is happening in the southern hemisphere, it does not seem that this will be the case.</p>
+
+      <p class="para" id="p4"><span class="pnum" aria-hidden="true">4</span><span class="ev" data-ev="e3">In the northern hemisphere, swine flu has spread to the extent that over 98% of flu cases genotyped in the US towards the end of June were caused by the pandemic virus.</span> This is to be expected. <span class="ev" data-ev="e4">Whilst the seasonal flu viruses generally die out during the summer season, the pandemic virus can be more powerful as fewer people have built up immunity to it.</span></p>
+
+      <p class="para" id="p5"><span class="pnum" aria-hidden="true">5</span><span class="ev" data-ev="e5">The state of Victoria in Australia reported this week that the H1N1 virus is now considered for 99% of all flu cases.</span> There are reports of a similar situation in South America. <span class="ev" data-ev="e6">In Chile, the H1N1 virus is also much stronger than other seasonal viruses. "98% of the flu cases we now take are caused by H1N1,"</span> Jeanette Vega, Chile's undersecretary of public health, said last week about a pandemic peak in Cancun, Mexico. "The seasonal vaccine is not used."</p>
+
+      <p class="para" id="p6"><span class="pnum" aria-hidden="true">6</span><span class="ev" data-ev="e7">In the Argentine capital Buenos Aires, Juan Manzur, the health minister, reported last week about the emergency situation in that 90% of the flu is a result of the H1N1 virus.</span></p>
+
+      <p class="para" id="p7"><span class="pnum" aria-hidden="true">7</span>During this winter in the northern hemisphere, it is an important matter. <span class="ev" data-ev="e8">"If the pandemic virus greatly attacks the seasonal viruses in a regular flu season, the seasonal viruses are likely to be exchanged by the new virus, like in the 1968 pandemic,"</span> says Ab Osterhaus in the University of Rotterdam in the Netherlands.</p>
+
+      <p class="para" id="p8"><span class="pnum" aria-hidden="true">8</span>In previous pandemics, the virus has changed, producing negative side effects. So far for H1N1, there have only been a few ominous signs.</p>
+
+      <p class="para" id="p9"><span class="pnum" aria-hidden="true">9</span>The mutation of the virus's polymerase enzyme has been replicated efficiently from a sample taken in Shanghai. Ron Fouchier at the University of Rotterdam says that this could spread if it makes the virus more contagious, but the virus may also improve pathogenicity.</p>
+
+      <p class="para" id="p10"><span class="pnum" aria-hidden="true">10</span><span class="ev" data-ev="e9">Also last week, two cases of the H1N1 virus with resistance to the main antiviral drug, Tamiflu, were found in people using the drug.</span> <span class="ev" data-ev="e9b">Another was found in a girl who had never taken the drug, suggesting Tamiflu – resistant to the H1N1 virus might already be in circulation.</span></p>
+    </article>
+  </section>
+
+  <div class="divider" id="divider" role="separator" aria-orientation="vertical" aria-label="Resize panels" aria-valuemin="20" aria-valuemax="80" aria-valuenow="50" tabindex="0" title="Drag to resize (double-click to reset)"></div>
+
+  <!-- RIGHT: questions -->
+  <section class="panel questions-panel" aria-label="Questions">
+    <div class="q-scroll" id="qScroll">
+      <div class="score-box" id="scoreBox" role="status" aria-live="polite">
+        <div class="score">Score: <span id="scoreVal">0</span> / 13 <small id="scoreNote"></small></div>
+        <button class="btn primary" id="retryBtn" type="button">Try Again</button>
+      </div>
+
+      <div class="q-section" id="sec1">
+        <h3>Questions 1–9</h3>
+        <div class="instr-box">
+          <p>Complete the summary below.</p>
+          <p>Choose <strong>NO MORE THAN THREE WORDS</strong> from the passage for each answer.</p>
+        </div>
+
+        <div class="summary">
+          <p>There is currently a severe problem of
+            <span class="gap" id="qwrap1"><span class="badge" aria-hidden="true">1</span><input type="text" id="q1" aria-label="Question 1" autocomplete="off" spellcheck="false"><span class="warn" id="warn1" aria-live="polite">Max 3 words</span><span class="res" id="res1"></span></span>
+            in the world, especially both the US and the UK are making strenuous efforts to solve the problem.</p>
+          <p>In the meantime, during the middle of winter flu season,
+            <span class="gap" id="qwrap2"><span class="badge" aria-hidden="true">2</span><input type="text" id="q2" aria-label="Question 2" autocomplete="off" spellcheck="false"><span class="warn" id="warn2" aria-live="polite">Max 3 words</span><span class="res" id="res2"></span></span>
+            is likely to substitute the seasonal flu viruses in the southern hemisphere. Also, over 98 per cent out of flu cases genotyped in the US were generated by
+            <span class="gap" id="qwrap3"><span class="badge" aria-hidden="true">3</span><input type="text" id="q3" aria-label="Question 3" autocomplete="off" spellcheck="false"><span class="warn" id="warn3" aria-live="polite">Max 3 words</span><span class="res" id="res3"></span></span>.
+            Whilst seasonal flu viruses usually fade away in
+            <span class="gap" id="qwrap4"><span class="badge" aria-hidden="true">4</span><input type="text" id="q4" aria-label="Question 4" autocomplete="off" spellcheck="false"><span class="warn" id="warn4" aria-live="polite">Max 3 words</span><span class="res" id="res4"></span></span>,
+            the pandemic virus has the advantage that few people have immunity to it.</p>
+          <p>There are reports that the H1N1 virus accounts for more than 90 per cent of all flu cases in countries, such as
+            <span class="gap" id="qwrap5"><span class="badge" aria-hidden="true">5</span><input type="text" id="q5" aria-label="Question 5" autocomplete="off" spellcheck="false"><span class="warn" id="warn5" aria-live="polite">Max 3 words</span><span class="res" id="res5"></span></span>,
+            <span class="gap" id="qwrap6"><span class="badge" aria-hidden="true">6</span><input type="text" id="q6" aria-label="Question 6" autocomplete="off" spellcheck="false"><span class="warn" id="warn6" aria-live="polite">Max 3 words</span><span class="res" id="res6"></span></span>
+            and
+            <span class="gap" id="qwrap7"><span class="badge" aria-hidden="true">7</span><input type="text" id="q7" aria-label="Question 7" autocomplete="off" spellcheck="false"><span class="warn" id="warn7" aria-live="polite">Max 3 words</span><span class="res" id="res7"></span></span>.</p>
+          <p>According to Ab Osterhaus,
+            <span class="gap" id="qwrap8"><span class="badge" aria-hidden="true">8</span><input type="text" id="q8" aria-label="Question 8" autocomplete="off" spellcheck="false"><span class="warn" id="warn8" aria-live="polite">Max 3 words</span><span class="res" id="res8"></span></span>
+            in a regular flu season can be replaced by the pandemic virus. A new virus was found to be resistant to the antiviral drug,
+            <span class="gap" id="qwrap9"><span class="badge" aria-hidden="true">9</span><input type="text" id="q9" aria-label="Question 9" autocomplete="off" spellcheck="false"><span class="warn" id="warn9" aria-live="polite">Max 3 words</span><span class="res" id="res9"></span></span>.</p>
+        </div>
+
+        <div class="review" id="review">
+          <h4>Review — Questions 1–9</h4>
+          <div id="reviewList"></div>
+        </div>
+      </div>
+
+      <div class="q-section" id="sec2">
+        <h3>Questions 10–13</h3>
+        <div class="instr-box">
+          <p>Do the following statements reflect the claims of the writer in Reading Passage 1?</p>
+          <p>Choose:</p>
+          <dl>
+            <dt>YES</dt><dd>if the statement reflects the claims of the writer</dd>
+            <dt>NO</dt><dd>if the statement contradicts the claims of the writer</dd>
+            <dt>NOT GIVEN</dt><dd>if it is impossible to say what the writer thinks about this</dd>
+          </dl>
+        </div>
+        <div id="tfList"></div>
+      </div>
+    </div>
+
+    <nav class="q-nav" id="qNav" aria-label="Question navigation"></nav>
+  </section>
+</main>
+
+<button class="hl-btn" id="hlBtn" type="button">Highlight</button>
+
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalText">
+  <div class="modal">
+    <h2 id="modalTitle">Check your answers?</h2>
+    <p id="modalText"></p>
+    <div class="actions">
+      <button class="btn" id="modalCancel" type="button">Keep working</button>
+      <button class="btn primary" id="modalOk" type="button">Check Answers</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ================= Data ================= */
+  var TOTAL = 13;
+  var GAP_KEY = {
+    1: { alts: ["swine flu pandemic"], display: "swine flu pandemic", para: 1, ev: ["e1", "e10"],
+         note: "Paragraph 1: “The swine flu pandemic has become more problematic.” Both the US (White House meeting) and the UK (focused response) are taking action." },
+    2: { alts: ["H1N1 virus", "swine H1N1 virus", "the swine H1N1"], display: "H1N1 virus", para: 2, ev: ["e2"],
+         note: "Paragraph 2: “the swine H1N1 virus seems to be replacing the seasonal flu viruses”." },
+    3: { alts: ["pandemic virus"], display: "pandemic virus", para: 4, ev: ["e3"],
+         note: "Paragraph 4: “over 98% of flu cases genotyped in the US … were caused by the pandemic virus”." },
+    4: { alts: ["summer", "summer season"], display: "summer (season)", para: 4, ev: ["e4"],
+         note: "Paragraph 4: “the seasonal flu viruses generally die out during the summer season”." },
+    8: { alts: ["seasonal viruses", "seasonal flu viruses"], display: "seasonal viruses", para: 7, ev: ["e8"],
+         note: "Paragraph 7 (Ab Osterhaus): “the seasonal viruses are likely to be exchanged by the new virus”." },
+    9: { alts: ["Tamiflu"], display: "Tamiflu", para: 10, ev: ["e9"],
+         note: "Paragraph 10: “two cases of the H1N1 virus with resistance to the main antiviral drug, Tamiflu”." }
+  };
+  var COUNTRIES = ["Australia", "Chile", "Argentina"];
+  var COUNTRY_INFO = {
+    para: "5–6", ev: ["e5", "e6", "e7"],
+    note: "Paragraphs 5–6: Victoria in Australia reports 99%, Chile 98%, and Buenos Aires in Argentina 90%. Questions 5–7 can be answered in any order."
+  };
+  var TF = [
+    { n: 10, text: "The UK and the US had discussed and worked together on the swine flu pandemic in the past.",
+      answer: "NOT GIVEN", para: 1, ev: ["e10"],
+      note: "Paragraph 1 only says the White House will meet state representatives and that the UK has focused its response. Nothing is said about the UK and the US working together in the past." },
+    { n: 11, text: "Over 98 per cent of flu cases in the US was motivated by the pandemic virus.",
+      answer: "YES", para: 4, ev: ["e3"],
+      note: "Paragraph 4: “over 98% of flu cases genotyped in the US towards the end of June were caused by the pandemic virus”." },
+    { n: 12, text: "In Argentina, 60 per cent of the flu virus in circulation is the H1N1 virus.",
+      answer: "NO", para: 6, ev: ["e7"],
+      note: "Paragraph 6 says 90% of the flu in Buenos Aires is the H1N1 virus, not 60%." },
+    { n: 13, text: "Tamiflu is the crucial antiviral medicine which is resistant to the H1N1 virus.",
+      answer: "NO", para: 10, ev: ["e9", "e9b"],
+      note: "Paragraph 10: it is the H1N1 virus that is resistant to Tamiflu, not the reverse." }
+  ];
+  var OPTIONS = ["YES", "NO", "NOT GIVEN"];
+
+  /* ================= State ================= */
+  var checked = false;
+  var timeLeft = 20 * 60;
+  var timerId = null;
+  var activeExplains = {}; // question number -> evidence ids
+
+  /* ================= Helpers ================= */
+  function $(id) { return document.getElementById(id); }
+  function norm(s) {
+    return String(s || "")
+      .toLowerCase()
+      .replace(/[‘’]/g, "'")
+      .replace(/^[\s"'“”.,;:!?]+|[\s"'“”.,;:!?]+$/g, "")
+      .replace(/\s+/g, " ")
+      .replace(/^the /, "")
+      .trim();
+  }
+  function wordCount(s) { var t = s.trim(); return t ? t.split(/\s+/).length : 0; }
+  function getAnswer(n) {
+    if (n <= 9) return $("q" + n).value;
+    var r = document.querySelector('input[name="q' + n + '"]:checked');
+    return r ? r.value : "";
+  }
+  function isAnswered(n) { return getAnswer(n).trim() !== ""; }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  var isNarrow = function () { return window.matchMedia("(max-width: 767px)").matches; };
+
+  /* ================= Build TF questions ================= */
+  var tfList = $("tfList");
+  TF.forEach(function (q) {
+    var item = document.createElement("div");
+    item.className = "tf-item";
+    item.id = "qwrap" + q.n;
+    var html = '<p class="tf-statement" id="stmt' + q.n + '"><span class="badge" aria-hidden="true">' + q.n + "</span><span>" + escapeHtml(q.text) + "</span></p>";
+    html += '<fieldset class="pills"><legend>Question ' + q.n + ": " + escapeHtml(q.text) + "</legend>";
+    OPTIONS.forEach(function (opt, i) {
+      var id = "q" + q.n + "_" + i;
+      html += '<label class="pill" for="' + id + '"><input type="radio" name="q' + q.n + '" id="' + id + '" value="' + opt + '"><span>' + opt + "</span></label>";
+    });
+    html += "</fieldset>";
+    html += '<div class="tf-result" id="tfres' + q.n + '"></div>';
+    item.innerHTML = html;
+    tfList.appendChild(item);
+  });
+
+  /* ================= Bottom navigation ================= */
+  var nav = $("qNav");
+  for (var i = 1; i <= TOTAL; i++) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "nav-btn";
+    b.id = "nav" + i;
+    b.textContent = i;
+    b.setAttribute("aria-label", "Go to question " + i);
+    b.dataset.q = i;
+    nav.appendChild(b);
+  }
+  nav.addEventListener("click", function (e) {
+    var btn = e.target.closest(".nav-btn");
+    if (!btn) return;
+    goTo(+btn.dataset.q);
+  });
+  function goTo(n) {
+    var wrap = $("qwrap" + n);
+    wrap.scrollIntoView({ behavior: "smooth", block: "center" });
+    var target = n <= 9 ? $("q" + n)
+      : (document.querySelector('input[name="q' + n + '"]:checked') || document.querySelector('input[name="q' + n + '"]'));
+    setTimeout(function () { target.focus({ preventScroll: true }); }, 250);
+  }
+
+  /* ================= Answered counter ================= */
+  function updateProgress() {
+    var count = 0;
+    for (var n = 1; n <= TOTAL; n++) {
+      var a = isAnswered(n);
+      if (a) count++;
+      var nb = $("nav" + n);
+      if (!checked) nb.classList.toggle("answered", a);
+      nb.setAttribute("aria-label", "Go to question " + n + (a ? " (answered)" : " (unanswered)"));
+    }
+    $("answeredCount").textContent = count;
+    return count;
+  }
+
+  /* ================= Gap inputs ================= */
+  for (var g = 1; g <= 9; g++) {
+    (function (n) {
+      var input = $("q" + n);
+      input.addEventListener("input", function () {
+        var over = wordCount(input.value) > 3;
+        $("warn" + n).classList.toggle("show", over);
+        input.classList.toggle("over", over);
+        input.setAttribute("aria-invalid", over ? "true" : "false");
+        updateProgress();
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); if (n < 9) $("q" + (n + 1)).focus(); }
+      });
+    })(g);
+  }
+  tfList.addEventListener("change", updateProgress);
+
+  /* ================= Timer ================= */
+  var timerEl = $("timer"), timerBtn = $("timerBtn");
+  function fmt(s) { var m = Math.floor(s / 60), r = s % 60; return (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r; }
+  function renderTimer() {
+    timerEl.textContent = fmt(timeLeft);
+    timerEl.classList.toggle("low", timeLeft < 120);
+    timerEl.setAttribute("aria-label", "Time remaining " + Math.floor(timeLeft / 60) + " minutes " + (timeLeft % 60) + " seconds");
+  }
+  function startTimer() {
+    if (timerId || timeLeft <= 0) return;
+    timerId = setInterval(function () {
+      timeLeft--;
+      renderTimer();
+      if (timeLeft <= 0) {
+        pauseTimer();
+        timerBtn.textContent = "Time up";
+        timerBtn.disabled = true;
+      }
+    }, 1000);
+    timerBtn.textContent = "Pause";
+  }
+  function pauseTimer() {
+    clearInterval(timerId);
+    timerId = null;
+    if (timeLeft > 0) timerBtn.textContent = timeLeft === 1200 ? "Start" : "Resume";
+  }
+  function resetTimer() {
+    pauseTimer();
+    timeLeft = 20 * 60;
+    timerBtn.disabled = false;
+    timerBtn.textContent = "Start";
+    renderTimer();
+  }
+  timerBtn.addEventListener("click", function () { timerId ? pauseTimer() : startTimer(); });
+
+  /* ================= Divider ================= */
+  var divider = $("divider"), passagePanel = $("passagePanel"), main = $("main");
+  var dragging = false;
+  function setSplit(pct) {
+    pct = Math.max(20, Math.min(80, pct));
+    passagePanel.style.flexBasis = pct + "%";
+    divider.setAttribute("aria-valuenow", Math.round(pct));
+  }
+  divider.addEventListener("pointerdown", function (e) {
+    dragging = true;
+    divider.setPointerCapture(e.pointerId);
+    divider.classList.add("dragging");
+    document.body.classList.add("resizing");
+  });
+  divider.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var rect = main.getBoundingClientRect();
+    setSplit(((e.clientX - rect.left) / rect.width) * 100);
+  });
+  function endDrag() { dragging = false; divider.classList.remove("dragging"); document.body.classList.remove("resizing"); }
+  divider.addEventListener("pointerup", endDrag);
+  divider.addEventListener("pointercancel", endDrag);
+  divider.addEventListener("dblclick", function () { setSplit(50); });
+  divider.addEventListener("keydown", function (e) {
+    var cur = +divider.getAttribute("aria-valuenow");
+    if (e.key === "ArrowLeft") { setSplit(cur - 2); e.preventDefault(); }
+    else if (e.key === "ArrowRight") { setSplit(cur + 2); e.preventDefault(); }
+    else if (e.key === "Home") { setSplit(20); e.preventDefault(); }
+    else if (e.key === "End") { setSplit(80); e.preventDefault(); }
+    else if (e.key === "Enter") { setSplit(50); e.preventDefault(); }
+  });
+
+  /* ================= Highlighting ================= */
+  var passage = $("passage"), hlBtn = $("hlBtn");
+  var savedRange = null;
+
+  function selectionInPassage() {
+    var sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || sel.isCollapsed) return null;
+    var r = sel.getRangeAt(0);
+    if (!passage.contains(r.commonAncestorContainer)) return null;
+    if (!r.toString().trim()) return null;
+    return r;
+  }
+  function maybeShowHlBtn() {
+    var r = selectionInPassage();
+    if (!r) { hideHlBtn(); return; }
+    savedRange = r.cloneRange();
+    var rects = r.getClientRects();
+    var last = rects[rects.length - 1] || r.getBoundingClientRect();
+    hlBtn.style.display = "block";
+    var bw = hlBtn.offsetWidth, bh = hlBtn.offsetHeight;
+    var left = Math.min(window.innerWidth - bw - 8, Math.max(8, last.right - bw / 2));
+    var top = last.bottom + 8;
+    if (top + bh > window.innerHeight - 8) top = last.top - bh - 8;
+    hlBtn.style.left = left + "px";
+    hlBtn.style.top = top + "px";
+  }
+  function hideHlBtn() { hlBtn.style.display = "none"; savedRange = null; }
+
+  function highlightRange(range) {
+    var walker = document.createTreeWalker(passage, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        if (!node.parentElement.closest(".para")) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement.closest(".pnum")) return NodeFilter.FILTER_REJECT;
+        if (node.parentElement.closest("mark.hl")) return NodeFilter.FILTER_REJECT;
+        return range.intersectsNode(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    var nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      var start = node === range.startContainer ? range.startOffset : 0;
+      var end = node === range.endContainer ? range.endOffset : node.length;
+      if (start >= end) return;
+      var target = node;
+      if (end < target.length) target.splitText(end);
+      if (start > 0) target = target.splitText(start);
+      if (!target.nodeValue.trim()) return;
+      var mark = document.createElement("mark");
+      mark.className = "hl";
+      mark.title = "Click to remove highlight";
+      target.parentNode.insertBefore(mark, target);
+      mark.appendChild(target);
+    });
+  }
+  function unwrap(el) {
+    var parent = el.parentNode;
+    while (el.firstChild) parent.insertBefore(el.firstChild, el);
+    parent.removeChild(el);
+    parent.normalize();
+  }
+
+  ["mouseup", "keyup", "touchend"].forEach(function (evt) {
+    passage.addEventListener(evt, function () { setTimeout(maybeShowHlBtn, 10); });
+  });
+  document.addEventListener("mousedown", function (e) { if (e.target !== hlBtn) hideHlBtn(); });
+  passagePanel.addEventListener("scroll", function () { if (hlBtn.style.display === "block") maybeShowHlBtn(); });
+  window.addEventListener("resize", hideHlBtn);
+  hlBtn.addEventListener("mousedown", function (e) { e.preventDefault(); });
+  hlBtn.addEventListener("click", function () {
+    if (savedRange) highlightRange(savedRange);
+    window.getSelection().removeAllRanges();
+    hideHlBtn();
+  });
+  passage.addEventListener("click", function (e) {
+    var m = e.target.closest("mark.hl");
+    if (!m) return;
+    var sel = window.getSelection();
+    if (sel && !sel.isCollapsed) return;
+    unwrap(m);
+  });
+
+  /* ================= Explanations ================= */
+  function refreshEvidence() {
+    var on = {};
+    Object.keys(activeExplains).forEach(function (k) { activeExplains[k].forEach(function (id) { on[id] = true; }); });
+    passage.querySelectorAll(".ev").forEach(function (el) { el.classList.toggle("active", !!on[el.dataset.ev]); });
+  }
+  function toggleExplain(key, evIds, btn, box) {
+    var open = btn.getAttribute("aria-expanded") !== "true";
+    btn.setAttribute("aria-expanded", open);
+    btn.textContent = open ? "Hide explanation" : "Show explanation";
+    box.classList.toggle("show", open);
+    if (open) activeExplains[key] = evIds; else delete activeExplains[key];
+    refreshEvidence();
+    if (open && !isNarrow()) {
+      var first = passage.querySelector('.ev[data-ev="' + evIds[0] + '"]');
+      if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  function explainHtml(key, para, note) {
+    return '<button type="button" class="explain-btn" aria-expanded="false" aria-controls="exp' + key + '" data-key="' + key + '">Show explanation</button>' +
+      '<div class="explain-text" id="exp' + key + '"><strong>Paragraph ' + para + ".</strong> " + escapeHtml(note) + "</div>";
+  }
+  function evFor(key) {
+    if (key >= 5 && key <= 7) return COUNTRY_INFO.ev;
+    if (GAP_KEY[key]) return GAP_KEY[key].ev;
+    for (var i = 0; i < TF.length; i++) if (TF[i].n === key) return TF[i].ev;
+    return [];
+  }
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest(".explain-btn");
+    if (!btn) return;
+    var key = +btn.dataset.key;
+    toggleExplain(key, evFor(key), btn, $("exp" + key));
+  });
+
+  /* ================= Checking ================= */
+  function markGap(n, ok, correctDisplay) {
+    var input = $("q" + n), res = $("res" + n);
+    input.classList.remove("over");
+    $("warn" + n).classList.remove("show");
+    input.classList.add(ok ? "correct" : "wrong");
+    res.className = "res " + (ok ? "ok" : "bad");
+    res.innerHTML = ok ? '<span aria-label="correct">✓</span>'
+      : '<span aria-label="incorrect">✗</span><span class="ans">' + escapeHtml(correctDisplay) + "</span>";
+    $("nav" + n).classList.remove("answered");
+    $("nav" + n).classList.add(ok ? "correct" : "wrong");
+  }
+
+  function checkAnswers() {
+    checked = true;
+    pauseTimer();
+    var score = 0;
+    var results = {}; // n -> {ok, correct}
+
+    [1, 2, 3, 4, 8, 9].forEach(function (n) {
+      var v = norm(getAnswer(n));
+      var ok = v !== "" && GAP_KEY[n].alts.some(function (a) { return norm(a) === v; });
+      results[n] = { ok: ok, correct: GAP_KEY[n].display };
+    });
+
+    // Q5–7 as an interchangeable set
+    var remaining = COUNTRIES.slice();
+    var setOk = {};
+    [5, 6, 7].forEach(function (n) {
+      var v = norm(getAnswer(n));
+      var idx = -1;
+      for (var i = 0; i < remaining.length; i++) if (norm(remaining[i]) === v) { idx = i; break; }
+      if (v !== "" && idx > -1) { setOk[n] = true; remaining.splice(idx, 1); }
+    });
+    [5, 6, 7].forEach(function (n) {
+      if (setOk[n]) results[n] = { ok: true, correct: "" };
+      else results[n] = { ok: false, correct: remaining.shift() };
+    });
+
+    TF.forEach(function (q) {
+      results[q.n] = { ok: getAnswer(q.n) === q.answer, correct: q.answer };
+    });
+
+    // Render gap results + review list
+    var review = "";
+    for (var n = 1; n <= 9; n++) {
+      var r = results[n];
+      if (r.ok) score++;
+      markGap(n, r.ok, r.correct);
+      var para = (n >= 5 && n <= 7) ? COUNTRY_INFO.para : GAP_KEY[n].para;
+      var note = (n >= 5 && n <= 7) ? COUNTRY_INFO.note : GAP_KEY[n].note;
+      var given = getAnswer(n).trim();
+      review += '<div class="review-row"><div class="rhead"><span class="badge">' + n + "</span>" +
+        '<span class="res ' + (r.ok ? "ok" : "bad") + '">' + (r.ok ? "✓" : "✗") + "</span>" +
+        "<span>Your answer: <em>" + (given ? escapeHtml(given) : "(blank)") + "</em></span>" +
+        (r.ok ? "" : '<span>Correct: <strong style="color:var(--green)">' + escapeHtml(r.correct) + "</strong></span>") +
+        "</div>" + explainHtml(n, para, note) + "</div>";
+    }
+    $("reviewList").innerHTML = review;
+    $("review").classList.add("show");
+
+    // Render TF results
+    TF.forEach(function (q) {
+      var r = results[q.n];
+      if (r.ok) score++;
+      document.querySelectorAll('input[name="q' + q.n + '"]').forEach(function (inp) {
+        var span = inp.nextElementSibling;
+        if (inp.value === q.answer) inp.parentElement.classList.add("is-correct");
+        if (inp.checked) span.classList.add(r.ok ? "right-pick" : "wrong-pick");
+      });
+      $("tfres" + q.n).innerHTML =
+        '<span class="res ' + (r.ok ? "ok" : "bad") + '">' + (r.ok ? "✓ Correct" : "✗ Incorrect") +
+        (r.ok ? "" : '<span class="ans">Answer: ' + q.answer + "</span>") + "</span><br>" +
+        explainHtml(q.n, q.para, q.note);
+      $("nav" + q.n).classList.remove("answered");
+      $("nav" + q.n).classList.add(r.ok ? "correct" : "wrong");
+    });
+
+    // Lock inputs
+    for (var k = 1; k <= 9; k++) $("q" + k).readOnly = true;
+    document.querySelectorAll('#tfList input[type="radio"]').forEach(function (inp) { inp.disabled = true; });
+    $("checkBtn").disabled = true;
+    timerBtn.disabled = true;
+
+    $("scoreVal").textContent = score;
+    $("scoreNote").textContent = "(time used " + fmt(1200 - timeLeft) + ")";
+    $("scoreBox").classList.add("show");
+    $("qScroll").scrollTo({ top: 0, behavior: "smooth" });
+    if (isNarrow()) $("scoreBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("retryBtn").focus({ preventScroll: true });
+  }
+
+  function tryAgain() {
+    checked = false;
+    for (var n = 1; n <= 9; n++) {
+      var input = $("q" + n);
+      input.value = "";
+      input.readOnly = false;
+      input.classList.remove("correct", "wrong", "over");
+      input.removeAttribute("aria-invalid");
+      $("res" + n).innerHTML = "";
+      $("res" + n).className = "res";
+      $("warn" + n).classList.remove("show");
+    }
+    document.querySelectorAll('#tfList input[type="radio"]').forEach(function (inp) {
+      inp.checked = false;
+      inp.disabled = false;
+      inp.parentElement.classList.remove("is-correct");
+      inp.nextElementSibling.classList.remove("right-pick", "wrong-pick");
+    });
+    TF.forEach(function (q) { $("tfres" + q.n).innerHTML = ""; });
+    $("reviewList").innerHTML = "";
+    $("review").classList.remove("show");
+    for (var i = 1; i <= TOTAL; i++) $("nav" + i).classList.remove("answered", "correct", "wrong");
+    activeExplains = {};
+    refreshEvidence();
+    passage.querySelectorAll("mark.hl").forEach(unwrap);
+    $("scoreBox").classList.remove("show");
+    $("checkBtn").disabled = false;
+    resetTimer();
+    updateProgress();
+    $("qScroll").scrollTo({ top: 0 });
+    passagePanel.scrollTo({ top: 0 });
+    if (isNarrow()) window.scrollTo({ top: 0 });
+    $("q1").focus({ preventScroll: true });
+  }
+
+  /* ================= Confirmation modal ================= */
+  var modal = $("modal"), lastFocus = null;
+  function openModal() {
+    var count = updateProgress();
+    var unanswered = TOTAL - count;
+    $("modalText").textContent = "You have answered " + count + " of " + TOTAL + " questions" +
+      (unanswered ? " (" + unanswered + " left blank)" : "") +
+      ". Once checked, your answers will be locked.";
+    lastFocus = document.activeElement;
+    modal.classList.add("show");
+    $("modalOk").focus();
+  }
+  function closeModal() {
+    modal.classList.remove("show");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  $("checkBtn").addEventListener("click", openModal);
+  $("modalCancel").addEventListener("click", closeModal);
+  $("modalOk").addEventListener("click", function () { modal.classList.remove("show"); checkAnswers(); });
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+  modal.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { closeModal(); return; }
+    if (e.key === "Tab") {
+      var a = $("modalCancel"), b = $("modalOk");
+      if (e.shiftKey && document.activeElement === a) { e.preventDefault(); b.focus(); }
+      else if (!e.shiftKey && document.activeElement === b) { e.preventDefault(); a.focus(); }
+    }
+  });
+  $("retryBtn").addEventListener("click", tryAgain);
+
+  /* ================= Init ================= */
+  renderTimer();
+  updateProgress();
+})();
+</script>
+</body>
+</html>
